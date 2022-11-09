@@ -185,7 +185,7 @@ void SpellChecker(HashTableDouble<string>& dictionary, const string &document_fi
     while (document_file_stream >> input_word && !document_file_stream.fail())
     {
         ///////////////////////////set word to lower case for comparisons
-        input_word = removePunctuation(input_word);
+        input_word = toLower(removePunctuation(input_word));
         lowercase_word = toLower(input_word);
         if (dictionary.Contains(lowercase_word))
         {

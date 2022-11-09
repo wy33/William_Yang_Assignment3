@@ -113,9 +113,9 @@ void tryRemoveAChar(vector<string>& alts, const string& word, HashTableDouble<st
 
 void trySwappingChars(vector<string>& alts, const string& word, HashTableDouble<string>& dictionary) {
     string temp = word;
-    for (size_t i = 0; i < word.size()/* -1 */; i++)
+    for (size_t i = 0; i < word.size() -1 ; i++)
     {
-        for (size_t j = i + 1; j < word.size(); j++)
+/*        for (size_t j = i + 1; j < word.size(); j++)
         {
             swapChars(temp, i, j);
             if (dictionary.Contains(temp))
@@ -123,7 +123,13 @@ void trySwappingChars(vector<string>& alts, const string& word, HashTableDouble<
                 alts.push_back(temp);
             }
             swapChars(temp, i, j);
+        }*/
+        swapChars(temp, i, i + 1);
+        if(dictionary.Contains(temp))
+        {
+            alts.push_back(temp);
         }
+        swapChars(temp, i, i + 1);
     }
 }
 

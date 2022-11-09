@@ -103,7 +103,7 @@ void tryRemoveAChar(vector<string>& alts, const string& word, HashTableDouble<st
     {
         char_removed = temp[i];
         temp.erase(temp.begin() + i);
-        if (dictionary.Contains(temp))
+        if (dictionary.Contains(temp) && alts.back() != temp)
         {
             alts.push_back(temp);
         }

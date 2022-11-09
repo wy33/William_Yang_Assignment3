@@ -297,6 +297,7 @@ int testSpellingWrapper(int argument_count, char** argument_list) {
 // WE WILL NOT USE YOUR MAIN IN TESTING. DO NOT CODE FUNCTIONALITY INTO THE
 // MAIN. WE WILL DIRECTLY CALL testSpellingWrapper. ALL FUNCTIONALITY SHOULD BE
 // THERE. This main is only here for your own testing purposes.
+/*
 int main(int argc, char** argv) {
     if (argc != 3) {
         cout << "Usage: " << argv[0] << " <document-file> <dictionary-file>" << endl;
@@ -307,3 +308,4 @@ int main(int argc, char** argv) {
     
     return 0;
 }
+*/

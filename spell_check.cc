@@ -75,7 +75,7 @@ void swapChars(string& word, const int& pos1, const int& pos2) {
 void tryAlphabetChars(vector<string>& alts, const string& word, HashTableDouble<string>& dictionary) {
     string temp = word;
     char char_insert;
-    for (size_t i = 0; i < word.size(); i++)
+    for (size_t i = 0; i < word.size() + 1; i++)
     {
         // Insert a-z (97-122 ASCII values) into temp at position i and
         // test if it matches a dictionary word, if so, push_back to

@@ -117,16 +117,6 @@ public:
         return probes_used_;
     }
 
-    // Return element x in the hash table.
-    HashedObj GetElement(const HashedObj& x) const {
-        if (!Contains(x))
-        {
-            cerr << "Error: element does not exist." << endl;
-            exit(1);
-        }
-        return array_[FindPos(x)];
-    }
-
  private:        
     struct HashEntry {
         HashedObj element_;

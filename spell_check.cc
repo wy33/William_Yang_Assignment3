@@ -5,7 +5,6 @@
 #include <iostream>
 #include <string>
 #include <cmath>
-#include <map>
 #include <cctype>
 #include <vector>
 #include <algorithm>
@@ -20,24 +19,6 @@ using namespace std;
 // You can add more functions here.
 
 
-
-// Shows how the map that is eventually produced, used to print the required answers
-void printHighChangeables(const map<string, vector<string>>& adjacentWords, int minWords = 15) {
-
-    // Steps through the map to print and entrues that are pairs consisting of a word and vector of words
-    // const references are used to replace complicated expressions and avoid making unneeded copies
-    for (auto& entry : adjacentWords) {
-        const vector<string>& words = entry.second; // const
-
-        if (words.size() >= minWords) {
-            cout << entry.first << " (" << words.size() << "):";
-            for (auto& str : words) {
-                cout << " " << str;
-            }
-            cout << endl;
-        }
-    }
-}
 
 string removePunctuation(const string& word) {
     string copy = word;
@@ -81,55 +62,11 @@ bool oneCharOff(const string& word1, const string& word2) {
     return diffs == 1;
 }
 
-// Test to see if two words are the same except two characters
-bool twoCharsOff(const string& word1, const string& word2) {
-
-    // if they are not the same length then they cannot be the same except two characters
-    if (word1.length() != word2.length())
-        return false;
-
-    int diffs = 0; // count of differences
-
-    // traversing through the word
-    for (int i = 0; i < word1.length(); i++)
-        //checking character by character of word if they are equal
-        if (word1[i] != word2[i])
-            // return false if difference is more than 1
-            if (++diffs > 1)
-                return false;
-
-    // boolean expression that should evaluate to true
-    return diffs == 2;
-}
-
-// Returns the index of the first instance where two words have different characters
-// starting from the given position.
-// Meant to be a follow-up call from twoCharsOff() function after the two strings are
-// confirmed to have 2 differing characters each.
-int differingCharPosition(const string& word1, const string& word2,const int& position) {
-
-
-    for (int i = position; i < word1.length(); i++)
-    {
-        if (word1[i] != word2[i])
-            return i;
-    }
-    return -1;  // Cannot determine position in which they differ
-}
-
 // Swaps the chars of a word given the two positions of the chars.
 void swapChars(string& word, const int& pos1, const int& pos2) {
     char temp = move(word[pos1]);
     word[pos1] = move(word[pos2]);
     word[pos2] = move(temp);
-}
-
-
-bool oneCharMissing(const string& word1, const string& word2) {/////////////maybe obsolete, perhaps a function that returns an alternative is best
-    if (abs((int)word1.length() - (int)word2.length()) != 1)
-        return false;
-
-
 }
 
 // Adds a character to the word and tests if it is in the dictionary,
@@ -244,8 +181,8 @@ void SpellChecker(HashTableDouble<string>& dictionary, const string &document_fi
         ///////////////////////////set word to lower case for comparisons
         input_word = removePunctuation(input_word);
         lowercase_word = toLower(input_word);
-        if (dictionary.Contains(lowercase_word)) ////////////////////need to make Contains Function const as well as FindPos since hashtabledouble is const
-        {/////////////discussion board allows removal of const keyword in parameter
+        if (dictionary.Contains(lowercase_word))
+        {
             cout << input_word << " is CORRECT" << endl;
             continue;
         }
@@ -262,16 +199,6 @@ void SpellChecker(HashTableDouble<string>& dictionary, const string &document_fi
         printAlternatives(alternative_words, lowercase_word, 'C');
         alternative_words.clear();
 
-        // Print out alternative words.
- //       for (size_t i = 0; i < alternative_words.size(); i++)
- //       {
- //           cout << alternative_words[i] << " case" << endl;
-//
-  //      }
-//        alternative_words.clear();
-        /////////////////// fill words vector with adjacent words
-//        wordsOneChar[word] = words;
-//        printHighChangeables(wordsOneChar, 5);
     }
 
 
@@ -297,7 +224,6 @@ int testSpellingWrapper(int argument_count, char** argument_list) {
 // WE WILL NOT USE YOUR MAIN IN TESTING. DO NOT CODE FUNCTIONALITY INTO THE
 // MAIN. WE WILL DIRECTLY CALL testSpellingWrapper. ALL FUNCTIONALITY SHOULD BE
 // THERE. This main is only here for your own testing purposes.
-/*
 int main(int argc, char** argv) {
     if (argc != 3) {
         cout << "Usage: " << argv[0] << " <document-file> <dictionary-file>" << endl;
@@ -308,4 +234,3 @@ int main(int argc, char** argv) {
     
     return 0;
 }
-*/

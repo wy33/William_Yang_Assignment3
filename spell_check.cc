@@ -4,7 +4,6 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include <cmath>
 #include <cctype>
 #include <vector>
 #include <algorithm>
@@ -135,6 +134,7 @@ HashTableDouble<string> MakeDictionary(const string& dictionary_file) {
     string word;
     while (dictionary_file_stream >> word && !dictionary_file_stream.fail())
     {
+        word = toLower(word);
         dictionary_hash.Insert(move(word));
     }
     dictionary_file_stream.close();
@@ -154,15 +154,13 @@ void SpellChecker(HashTableDouble<string>& dictionary, const string &document_fi
     }
 
     string input_word;
-    string lowercase_word;
     vector<string> alternative_words;
     // 
     while (document_file_stream >> input_word && !document_file_stream.fail())
     {
         ///////////////////////////set word to lower case for comparisons
         input_word = toLower(removePunctuation(input_word));
-        lowercase_word = toLower(input_word);
-        if (dictionary.Contains(lowercase_word))
+        if (dictionary.Contains(input_word))
         {
             cout << input_word << " is CORRECT" << endl;
             continue;
@@ -170,14 +168,14 @@ void SpellChecker(HashTableDouble<string>& dictionary, const string &document_fi
 
         cout << input_word << " is INCORRECT" << endl;
 
-        tryAlphabetChars(alternative_words, lowercase_word, dictionary);
-        printAlternatives(alternative_words, lowercase_word, 'A');
+        tryAlphabetChars(alternative_words, input_word, dictionary);
+        printAlternatives(alternative_words, input_word, 'A');
         alternative_words.clear();
-        tryRemoveAChar(alternative_words, lowercase_word, dictionary);
-        printAlternatives(alternative_words, lowercase_word, 'B');
+        tryRemoveAChar(alternative_words, input_word, dictionary);
+        printAlternatives(alternative_words, input_word, 'B');
         alternative_words.clear();
-        trySwappingChars(alternative_words, lowercase_word, dictionary);
-        printAlternatives(alternative_words, lowercase_word, 'C');
+        trySwappingChars(alternative_words, input_word, dictionary);
+        printAlternatives(alternative_words, input_word, 'C');
         alternative_words.clear();
 
     }

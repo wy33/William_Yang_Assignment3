@@ -1,5 +1,9 @@
-// YOUR NAME.
+// William Yang
 // spell_check.cc: A simple spell checker.
+// Checks the provided document file for spelling mistakes.
+// If a word is correct, prints CORRECT.
+// If a word is incorrect, prints INCORRECT and offers alternative words
+// from the provided dictionary file.
 
 #include <fstream>
 #include <iostream>
@@ -8,26 +12,28 @@
 #include <vector>
 #include <algorithm>
 
-// You can change to quadratic probing if you
-// haven't implemented double hashing.
 #include "double_hashing.h"
 #include "linear_probing.h"
 #include "quadratic_probing.h"
+
 using namespace std;
 
-// You can add more functions here.
 
 
 // Removes punctuation at the beginning and end of word.
-string removePunctuation(const string& word) {
+string removePunctuation(const string& word)
+{
     string copy = word;
-    if (ispunct(copy[copy.size() - 1]))
-        copy.erase(copy.end() - 1);
-    if (ispunct(copy[0]))
-        copy.erase(copy.begin());
+    if (word.size() > 1) // Ensures copy will have at least one character when returning.
+        if (ispunct(copy[copy.size() - 1]))
+            copy.erase(copy.end() - 1);
+    if (word.size() > 1) // Ensures copy will have at least one character when returning.
+        if (ispunct(copy[0]))
+            copy.erase(copy.begin());
     return copy;
 }
 
+// Returns the lowercase version of word.
 string toLower(const string& word)
 {
     string copy = word;
@@ -35,8 +41,9 @@ string toLower(const string& word)
     return copy;
 }
 
-// Swaps the chars of a word given the two positions of the chars.
-void swapChars(string& word, const int& pos1, const int& pos2) {
+// Swaps the chars of a word given the two positions.
+void swapChars(string& word, const int& pos1, const int& pos2)
+{
     char temp = move(word[pos1]);
     word[pos1] = move(word[pos2]);
     word[pos2] = move(temp);
@@ -45,7 +52,8 @@ void swapChars(string& word, const int& pos1, const int& pos2) {
 // Adds a character to the word and tests if it is in the dictionary,
 // if it is, push to alternatives vector.
 // Try to insert a-z in all positions.
-void tryAlphabetChars(vector<string>& alts, const string& word, HashTableDouble<string>& dictionary) {
+void tryAlphabetChars(vector<string>& alts, const string& word, HashTableDouble<string>& dictionary)
+{
     string temp = word;
     char char_insert;
     for (size_t i = 0; i < word.size() + 1; i++) // +1 to test inserting a-z at the end of word
@@ -69,14 +77,15 @@ void tryAlphabetChars(vector<string>& alts, const string& word, HashTableDouble<
 // Removes a character from the word and tests if it is in the dictionary,
 // if it is, push to alternatives vector.
 // Try removing a char in all positions (removes only one char from word).
-void tryRemoveAChar(vector<string>& alts, const string& word, HashTableDouble<string>& dictionary) {
+void tryRemoveAChar(vector<string>& alts, const string& word, HashTableDouble<string>& dictionary)
+{
     string temp = word;
     char char_removed;
     for (size_t i = 0; i < word.size(); i++)
     {
-        char_removed = temp[i];
+        char_removed = temp[i]; // Needed to put removed character back into temp.
         temp.erase(temp.begin() + i);
-        if (dictionary.Contains(temp) /* && alts.back() != temp*/) // causes coredump because it is empty at the start, check for emptyness
+        if (dictionary.Contains(temp))
         {
             if (alts.empty())
                 alts.push_back(temp);
@@ -87,7 +96,10 @@ void tryRemoveAChar(vector<string>& alts, const string& word, HashTableDouble<st
     }
 }
 
-void trySwappingChars(vector<string>& alts, const string& word, HashTableDouble<string>& dictionary) {
+// Swaps adjacent characters in given word and tests if it is in the dictionary,
+// if it is, push to alternatives vector.
+void trySwappingChars(vector<string>& alts, const string& word, HashTableDouble<string>& dictionary)
+{
     string temp = word;
     for (size_t i = 0; i < word.size() -1; i++)
     {
@@ -97,32 +109,24 @@ void trySwappingChars(vector<string>& alts, const string& word, HashTableDouble<
             alts.push_back(temp);
         }
         swapChars(temp, i, i + 1);
-/*        for (size_t j = i + 1; j < word.size(); j++)
-        {
-            swapChars(temp, i, j);
-            if (dictionary.Contains(temp))
-            {
-                alts.push_back(temp);
-            }
-            swapChars(temp, i, j);
-        }*/
     }
 }
 
-void printAlternatives(const vector<string>& alts, const string& incorrect_word, const char& case_letter) {
-
+// Print the alternative words of the incorrect word
+// as well as the case letter associated with correction type.
+void printAlternatives(const vector<string>& alts, const string& incorrect_word, const char& case_letter)
+{
     for (size_t i = 0; i < alts.size(); i++)
-    {
         cout << "** " << incorrect_word << " -> " << alts[i] << " ** case " << case_letter << endl;
-
-    }
 }
 
 // Creates and fills double hashing hash table with all words from
 // dictionary_file
-HashTableDouble<string> MakeDictionary(const string& dictionary_file) {
+HashTableDouble<string> MakeDictionary(const string& dictionary_file)
+{
     HashTableDouble<string> dictionary_hash;
 
+    // Read dictionary file.
     fstream dictionary_file_stream(dictionary_file);
     if (!dictionary_file_stream.is_open())
     {
@@ -130,13 +134,13 @@ HashTableDouble<string> MakeDictionary(const string& dictionary_file) {
         exit(1);
     }
 
-    // Fill dictionary_hash.
     string word;
+    // Fill dictionary_hash.
     while (dictionary_file_stream >> word && !dictionary_file_stream.fail())
     {
-        word = toLower(word);
         dictionary_hash.Insert(move(word));
     }
+
     dictionary_file_stream.close();
 
     return dictionary_hash;
@@ -144,8 +148,9 @@ HashTableDouble<string> MakeDictionary(const string& dictionary_file) {
 
 // For each word in the document_file, it checks the 3 cases for a word being
 // misspelled and prints out possible corrections
-void SpellChecker(HashTableDouble<string>& dictionary, const string &document_file) {
-
+void SpellChecker(HashTableDouble<string>& dictionary, const string &document_file)
+{
+    // Read document file.
     fstream document_file_stream(document_file);
     if (!document_file_stream.is_open())
     {
@@ -155,19 +160,27 @@ void SpellChecker(HashTableDouble<string>& dictionary, const string &document_fi
 
     string input_word;
     vector<string> alternative_words;
-    // 
+    // Check for corrections of input word from document file.
     while (document_file_stream >> input_word && !document_file_stream.fail())
     {
-        ///////////////////////////set word to lower case for comparisons
+        // Remove punctuations at the beginning and end of input word
+        // and set word to lower case for comparisons.
         input_word = toLower(removePunctuation(input_word));
+
+        // If word is in dictionary, print:
+        // <word> is CORRECT
         if (dictionary.Contains(input_word))
         {
             cout << input_word << " is CORRECT" << endl;
             continue;
         }
 
+        // Word does not exist in dictionary, print:
+        // <word> is INCORRECT
         cout << input_word << " is INCORRECT" << endl;
 
+        // Find alternatives for the incorrect word from the dictionary
+        // and print them.
         tryAlphabetChars(alternative_words, input_word, dictionary);
         printAlternatives(alternative_words, input_word, 'A');
         alternative_words.clear();
@@ -180,15 +193,14 @@ void SpellChecker(HashTableDouble<string>& dictionary, const string &document_fi
 
     }
 
-
-
     document_file_stream.close();
 }
 
 // @argument_count: same as argc in main
 // @argument_list: save as argv in main.
 // Implements
-int testSpellingWrapper(int argument_count, char** argument_list) {
+int testSpellingWrapper(int argument_count, char** argument_list)
+{
     const string document_filename(argument_list[1]);
     const string dictionary_filename(argument_list[2]);
     
@@ -203,7 +215,8 @@ int testSpellingWrapper(int argument_count, char** argument_list) {
 // WE WILL NOT USE YOUR MAIN IN TESTING. DO NOT CODE FUNCTIONALITY INTO THE
 // MAIN. WE WILL DIRECTLY CALL testSpellingWrapper. ALL FUNCTIONALITY SHOULD BE
 // THERE. This main is only here for your own testing purposes.
-int main(int argc, char** argv) {
+int main(int argc, char** argv)
+{
     if (argc != 3) {
         cout << "Usage: " << argv[0] << " <document-file> <dictionary-file>" << endl;
         return 0;

@@ -1,3 +1,6 @@
+// William Yang
+// linear_probing.h: A hash table with linear probing implementation.
+
 #ifndef LINEAR_PROBING_H
 #define LINEAR_PROBING_H
 
@@ -6,122 +9,120 @@
 #include <functional>
 
 
-/*namespace {
 
-    // Internal method to test if a positive number is prime.
-    bool IsPrime(size_t n) {
-        if (n == 2 || n == 3)
-            return true;
-
-        if (n == 1 || n % 2 == 0)
-            return false;
-
-        for (size_t i = 3; i * i <= n; i += 2)
-            if (n % i == 0)
-                return false;
-
-        return true;
-    }
-
-    // Internal method to return a prime number at least as large as n.
-    size_t NextPrime(size_t n) {
-        if (n % 2 == 0)
-            ++n;
-        while (!IsPrime(n)) n += 2;
-        return n;
-    }
-
-}*/  // namespace
-
-
-// Quadratic probing implementation.
+// Class HashTableLinear:
+// A hash table with linear probing implementation.
 template <typename HashedObj>
 class HashTableLinear {
 public:
+    // Used to determine if hash entries are ACTIVE, EMPTY, or DELETED.
     enum EntryType { ACTIVE, EMPTY, DELETED };
 
-    explicit HashTableLinear(size_t size = 101) : array_(NextPrime(size))
-    {
+    // Default constructor for hash table.
+    // Size set to next prime number after 101 by default, unless specified.
+    explicit HashTableLinear(size_t size = 101) : array_(NextPrime(size)) {
         MakeEmpty();
     }
 
+    // Check if the hash table contains x.
+    // Return true if x is found;
+    // false otherwise.
     bool Contains(const HashedObj& x) {
         return IsActive(FindPos(x));
     }
 
+    // Clear the hash table.
     void MakeEmpty() {
         current_size_ = 0;
         for (auto& entry : array_)
             entry.info_ = EMPTY;
     }
 
+    // Insert x into the hash table.
+    // Returns true if successful;
+    // false otherwise.
     bool Insert(const HashedObj& x) {
-        // Insert x as active
         size_t current_pos = FindPos(x);
-        if (IsActive(current_pos))
+        if (IsActive(current_pos))  // Failed to insert.
             return false;
 
+        // Insert x as active.
         array_[current_pos].element_ = x;
         array_[current_pos].info_ = ACTIVE;
 
-        // Rehash; see Section 5.5
+        // Rehash; see Section 5.5.
         if (++current_size_ > array_.size() / 2)
             Rehash();
         return true;
     }
 
+    // Move insert x into the hash table.
+    // Returns true if successful;
+    // false otherwise.
     bool Insert(HashedObj&& x) {
-        // Insert x as active
         size_t current_pos = FindPos(x);
-        if (IsActive(current_pos))
+        if (IsActive(current_pos))  // Failed to insert.
             return false;
 
+        // Insert x as active.
         array_[current_pos] = std::move(x);
         array_[current_pos].info_ = ACTIVE;
 
-        // Rehash; see Section 5.5
+        // Rehash; see Section 5.5.
         if (++current_size_ > array_.size() / 2)
             Rehash();
 
         return true;
     }
 
+    // Removes x from the hash table.
+    // Returns true if successful;
+    // false otherwise.
     bool Remove(const HashedObj& x) {
         size_t current_pos = FindPos(x);
-        if (!IsActive(current_pos))
+        if (!IsActive(current_pos)) // Failed to remove.
             return false;
 
         array_[current_pos].info_ = DELETED;
         return true;
     }
 
+    // Returns the current size of the hash table.
     size_t Size() const {
         return current_size_;
     }
 
+    // Returns the capacity of the hash table.
     size_t Capacity() const {
         return array_.capacity();
     }
 
+    // Returns the load factor of the hash table.
     float LoadFactor() const {
         return (float)current_size_ / array_.capacity();
     }
 
+    // Returns the total collisions counter.
     size_t TotalCollisions() const {
         return collisions_;
     }
 
+    // Returns the average collisions of total collisions divided by the current size.
     float AverageCollisions() const {
         return (float)collisions_ / current_size_;
     }
 
+    // Return probes used for the latest FindPos() function call.
     size_t ProbesUsed() const {
         return probes_used_;
     }
 
 private:
+    // Hash entry of the hash table.
     struct HashEntry {
+        // The actual hashed element.
         HashedObj element_;
+        // The current state of the hash entry (ACTIVE, EMPTY, DELETED).
         EntryType info_;
 
         HashEntry(const HashedObj& e = HashedObj{}, EntryType i = EMPTY)
@@ -131,18 +132,23 @@ private:
             :element_{ std::move(e) }, info_{ i } {}
     };
 
-
+    // The hash table.
     std::vector<HashEntry> array_;
+    // Current size of table.
     size_t current_size_;
+    // Total collisions counter.
     size_t collisions_ = 0;
 
-    bool IsActive(size_t current_pos) const
-    {
+    // Check if position in table is ACTIVE (holds an element).
+    bool IsActive(size_t current_pos) const {
         return array_[current_pos].info_ == ACTIVE;
     }
 
     size_t probes_used_;   // To track number of probes used for find (most recent find).
 
+    // Return the position of x.
+    // Counts the number of probes used to find x.
+    // Automatically resets the counter with each call.
     size_t FindPos(const HashedObj& x) {
         probes_used_ = 1;
         size_t current_pos = InternalHash(x);
@@ -152,12 +158,13 @@ private:
             probes_used_++;
             collisions_++;
             current_pos++;  // Compute ith probe.
-            if (current_pos >= array_.size())
+            if (current_pos >= array_.size())   // Wrap around table.
                 current_pos -= array_.size();
         }
         return current_pos;
     }
 
+    // Rehash hash table, table is getting full.
     void Rehash() {
         std::vector<HashEntry> old_array = array_;
 
@@ -173,6 +180,7 @@ private:
                 Insert(std::move(entry.element_));
     }
 
+    // Hash function.
     size_t InternalHash(const HashedObj& x) const {
         static std::hash<HashedObj> hf;
         return hf(x) % array_.size();

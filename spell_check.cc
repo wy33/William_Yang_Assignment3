@@ -19,7 +19,7 @@ using namespace std;
 // You can add more functions here.
 
 
-
+// Removes punctuation at the beginning and end of word.
 string removePunctuation(const string& word) {
     string copy = word;
     if (ispunct(copy[copy.size() - 1]))
@@ -36,32 +36,6 @@ string toLower(const string& word)
     return copy;
 }
 
-bool equalsIgnoreCase(const string& lhs, const string& rhs)
-{
-    return toLower(lhs) == toLower(rhs);
-}
-
-// Test to see if two words are the same except one character
-bool oneCharOff(const string& word1, const string& word2) {
-
-    // if they are not the same length then they cannot be the same except one character
-    if (word1.length() != word2.length())
-        return false;
-
-    int diffs = 0; // count of differences
-
-    // traversing through the word
-    for (int i = 0; i < word1.length(); i++)
-        //checking character by character of word if they are equal
-        if (word1[i] != word2[i])
-            // return false if difference is more than 1
-            if (++diffs > 1)
-                return false;
-
-    // boolean expression that should evaluate to true
-    return diffs == 1;
-}
-
 // Swaps the chars of a word given the two positions of the chars.
 void swapChars(string& word, const int& pos1, const int& pos2) {
     char temp = move(word[pos1]);
@@ -75,7 +49,7 @@ void swapChars(string& word, const int& pos1, const int& pos2) {
 void tryAlphabetChars(vector<string>& alts, const string& word, HashTableDouble<string>& dictionary) {
     string temp = word;
     char char_insert;
-    for (size_t i = 0; i < word.size() + 1; i++)
+    for (size_t i = 0; i < word.size() + 1; i++) // +1 to test inserting a-z at the end of word
     {
         // Insert a-z (97-122 ASCII values) into temp at position i and
         // test if it matches a dictionary word, if so, push_back to
@@ -103,9 +77,12 @@ void tryRemoveAChar(vector<string>& alts, const string& word, HashTableDouble<st
     {
         char_removed = temp[i];
         temp.erase(temp.begin() + i);
-        if (dictionary.Contains(temp) && alts.back() != temp)
+        if (dictionary.Contains(temp) /* && alts.back() != temp*/) // causes coredump because it is empty at the start, check for emptyness
         {
-            alts.push_back(temp);
+            if (alts.empty())
+                alts.push_back(temp);
+            else if (alts.back() != temp)
+                alts.push_back(temp);
         }
         temp.insert(temp.begin() + i, char_removed);
     }
@@ -113,8 +90,14 @@ void tryRemoveAChar(vector<string>& alts, const string& word, HashTableDouble<st
 
 void trySwappingChars(vector<string>& alts, const string& word, HashTableDouble<string>& dictionary) {
     string temp = word;
-    for (size_t i = 0; i < word.size() -1 ; i++)
+    for (size_t i = 0; i < word.size() -1; i++)
     {
+        swapChars(temp, i, i + 1);
+        if (dictionary.Contains(temp))
+        {
+            alts.push_back(temp);
+        }
+        swapChars(temp, i, i + 1);
 /*        for (size_t j = i + 1; j < word.size(); j++)
         {
             swapChars(temp, i, j);
@@ -124,12 +107,6 @@ void trySwappingChars(vector<string>& alts, const string& word, HashTableDouble<
             }
             swapChars(temp, i, j);
         }*/
-        swapChars(temp, i, i + 1);
-        if(dictionary.Contains(temp))
-        {
-            alts.push_back(temp);
-        }
-        swapChars(temp, i, i + 1);
     }
 }
 
@@ -179,8 +156,6 @@ void SpellChecker(HashTableDouble<string>& dictionary, const string &document_fi
     string input_word;
     string lowercase_word;
     vector<string> alternative_words;
-//    map<string, vector<string>> wordsOneChar;
-//    vector<string> words;
     // 
     while (document_file_stream >> input_word && !document_file_stream.fail())
     {

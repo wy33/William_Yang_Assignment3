@@ -11,7 +11,7 @@
 
 
 // Class HashTableDouble:
-// A hash table with double hashing implementation.
+// A hash table container with double hashing implementation.
 template <typename HashedObj>
 class HashTableDouble {
 public:
@@ -19,7 +19,9 @@ public:
     enum EntryType { ACTIVE, EMPTY, DELETED };
 
     // Default constructor for hash table.
-    // Size set to next prime number after 101 by default, unless specified.
+    // Size set to 101 by default, unless specified.
+    // If size is specified and is prime, size is set to the desired number,
+    // otherwise set the size as the next prime number after given number.
     // R value set to 89 by default, unless specified.
     explicit HashTableDouble(size_t size = 101, int r = 89) : array_(NextPrime(size)), r_value_(r) {
         MakeEmpty();
@@ -51,7 +53,7 @@ public:
         array_[current_pos].element_ = x;
         array_[current_pos].info_ = ACTIVE;
 
-        // Rehash; see Section 5.5.
+        // Rehash.
         if (++current_size_ > array_.size() / 2)
             Rehash();
         return true;
@@ -69,7 +71,7 @@ public:
         array_[current_pos] = std::move(x);
         array_[current_pos].info_ = ACTIVE;
 
-        // Rehash; see Section 5.5.
+        // Rehash.
         if (++current_size_ > array_.size() / 2)
             Rehash();
 
@@ -84,6 +86,7 @@ public:
         if (!IsActive(current_pos)) // Failed to remove.
             return false;
 
+        // Removed x, set as deleted.
         array_[current_pos].info_ = DELETED;
         return true;
     }
@@ -126,9 +129,11 @@ private:
         // The current state of the hash entry (ACTIVE, EMPTY, DELETED).
         EntryType info_;
 
+        // Constructor for hash entry.
         HashEntry(const HashedObj& e = HashedObj{}, EntryType i = EMPTY)
             :element_{ e }, info_{ i } { }
 
+        // Move constructor for hash entry.
         HashEntry(HashedObj&& e, EntryType i = EMPTY)
             :element_{ std::move(e) }, info_{ i } {}
     };

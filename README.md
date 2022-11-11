@@ -53,3 +53,66 @@ All parts completed.
 - MakeDictionary(): opens dictionary file and inserts into the hash table using a while loop.
 - SpellChecker(): opens document file and uses a while loop to read the document file word by word. Each word has its beginning punctuation removed and then set to lowercase to query the dictionary hash table for correctness. If input word from document file is found in the dictionary hash table, prints CORRECT, if it is not found, prints INCORRECT followed by alternative words.
 - testSpellingWrapper(): unmodified.
+
+## Bugs encountered
+
+The number of probes and number of collisions don't match the expected output. This is most likely due to the program running on a different machine as described on the discussion board.
+On gradescope autograder, it says, "your code output length mismatched." I'm unsure as to exactly what this means, my guess is the number of alternative words generated doesn't match the number of alternatives expected on gradescope. It may also be that the formatting of the output is mismatched.
+
+## Input File
+
+`words.txt`
+`wordsEn.txt`
+`document1.txt`
+`document1_short.txt`
+`query_words.txt`
+
+## Output file
+
+`expected_output.txt`
+
+## Running the assignment
+
+Use provided `Makefile` for Homework 3.
+
+To compile on terminal, type:
+
+```bash
+make
+```
+
+You can compile one program individually by just typing `make <Program Name>`, for example:
+
+```bash
+make create_and_test_hash
+```
+
+```bash
+make spell_check
+```
+
+To delete executables and object files, type:
+
+```bash
+make clean
+```
+
+To run create_and_test_hash, type:
+
+```bash
+./create_and_test_hash <words_file> <query_words_file> <linear/quadratic/double> <r_value>
+```
+
+```bash
+./create_and_test_hash words.txt query_words.txt quadratic
+```
+
+```bash
+./create_and_test_hash words.txt query_words.txt double 89
+```
+
+To run spell_check, type:
+
+```bash
+./spell_check document1_short.txt wordsEn.txt
+```

@@ -114,5 +114,9 @@ To run create_and_test_hash, type:
 To run spell_check, type:
 
 ```bash
+./spell_check <document_file> <dictionary_file>
+```
+
+```bash
 ./spell_check document1_short.txt wordsEn.txt
 ```

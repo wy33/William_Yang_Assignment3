@@ -52,3 +52,4 @@ All parts completed.
 - printAlternatives(): prints the resulting alternatives of a word deemed to be incorrect (not found in dictionary) as well as the case associated with the correction type (case type supplied from parameter).
 - MakeDictionary(): opens dictionary file and inserts into the hash table using a while loop.
 - SpellChecker(): opens document file and uses a while loop to read the document file word by word. Each word has its beginning punctuation removed and then set to lowercase to query the dictionary hash table for correctness. If input word from document file is found in the dictionary hash table, prints CORRECT, if it is not found, prints INCORRECT followed by alternative words.
+- testSpellingWrapper(): unmodified.

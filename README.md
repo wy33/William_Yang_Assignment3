@@ -100,11 +100,11 @@ make clean
 To run create_and_test_hash, type:
 
 ```bash
-./create_and_test_hash <words_file> <query_words_file> <linear/quadratic/double> <r_value>
+./create_and_test_hash <words file> <query words file> <linear/quadratic/double> <r value>
 ```
 
 ```bash
-./create_and_test_hash words.txt query_words.txt quadratic
+./create_and_test_hash words.txt query _words.txt quadratic
 ```
 
 ```bash
@@ -114,7 +114,7 @@ To run create_and_test_hash, type:
 To run spell_check, type:
 
 ```bash
-./spell_check <document_file> <dictionary_file>
+./spell_check <document file> <dictionary file>
 ```
 
 ```bash

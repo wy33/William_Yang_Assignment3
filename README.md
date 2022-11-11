@@ -108,6 +108,10 @@ To run create_and_test_hash, type:
 ```
 
 ```bash
+./create_and_test_hash words.txt query _words.txt linear
+```
+
+```bash
 ./create_and_test_hash words.txt query_words.txt double 89
 ```
 

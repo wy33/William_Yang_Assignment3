@@ -35,11 +35,11 @@ All parts completed.
 - FindPos(): removed const keyword to enable probe and collision counting (member variables). Switched to linear probing, so offset variable removed and each iteration of while loop now increments current position by 1.
 
 `double_hashing.h`
-- Constructor: now accepts an r-value to use in double hashing. Default is 89 within the class.
+- Constructor: now accepts an r-value to use in double hashing. Default is **89** within the class.
 - DoubleHash(): added a second internal hash function for double hashing implementation.
 
 `create_and_test_hash.cc`
-- If double hashing is used, default R value is 89 unless specified in command line argument.
+- If double hashing is used, default R value is **89** unless specified in command line argument.
 - For all hashing implementations (linear, quadratic, double): insert words from words file into hash table, print attributes, then query table using query file.
 
 `spell_check.cc`

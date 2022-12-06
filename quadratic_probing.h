@@ -132,7 +132,7 @@ public:
         HashEntry(const HashedObj& e = HashedObj{}, EntryType i = EMPTY) 
             :element_{e}, info_{i} { }
 
-        // Move constructor for hash entry.
+        // Constructor to move hash entry element.
         HashEntry(HashedObj && e, EntryType i = EMPTY) 
             :element_{std::move(e)}, info_{ i } {}
     };
